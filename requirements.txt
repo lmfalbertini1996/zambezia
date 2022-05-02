@@ -7,3 +7,6 @@ plotly
 matplotlib
 shapely
 xarray
+pydeck
+numpy
+folium
