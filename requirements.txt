@@ -9,7 +9,6 @@ shapely
 xarray
 osgeo
 pydeck
-ast
 numpy
 random
 time

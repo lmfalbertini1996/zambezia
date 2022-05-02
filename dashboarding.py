@@ -452,7 +452,8 @@ elif which_mode == 'Single Cluster':
                str(info_gdf.admin_2.values)[2:-2])
         
         if 'No OSM location found' not in str(list(info_gdf.OSM)):
-            info_osm = ast.literal_eval(replace_name(str(info_gdf.OSM.values)))
+            #info_osm = ast.literal_eval(replace_name(str(info_gdf.OSM.values)))
+            info_osm = replace_name(str(info_gdf.OSM.values))
             types = info_osm[0::2]
             names = info_osm[1::2]
             settlements_df = pd.DataFrame({'types': types,
