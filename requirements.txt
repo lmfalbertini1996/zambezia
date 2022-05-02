@@ -10,6 +10,4 @@ xarray
 osgeo
 pydeck
 numpy
-random
-time
 folium
