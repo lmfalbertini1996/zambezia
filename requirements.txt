@@ -7,7 +7,7 @@ plotly
 matplotlib
 shapely
 xarray
-osgeo
+gdal
 pydeck
 numpy
 folium
