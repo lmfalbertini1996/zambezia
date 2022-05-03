@@ -1,0 +1,12 @@
+,0
+Number_clusters,80.0
+Number_connection_points,7.0
+Total population,24808.0
+Number_substations,273.0
+Length_LV_network,296.66541882219633
+Length_MV_network,156.030816
+Cost_substations,433200.0
+Cost_LV_network[euro],2966654.188221963
+Cost_MV_network[euro],3415451.813969271
+Cost_connection_points[euro],101500.0
+Total_costs[euro],6916806.002191234
