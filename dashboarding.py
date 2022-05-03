@@ -35,30 +35,7 @@ def replace_name(stringa):
     stringa = ''.join( c for c in stringa if c not in '[]""' )
     return stringa
 
-def raster_to_csv(cropped_gdf_path, destination_cropped_gdf_path):
-    # converting the raster in csv points dataframe
-    # filename = os.path.join(nightlights_path, 'nightlights_cropped')
-    data2 = xr.open_rasterio('{}.tif'.format(cropped_gdf_path))
-    nodata = data2.nodatavals[0]
 
-    inDs = gdal.Open('{}.tif'.format(cropped_gdf_path))
-
-    for i in range(1, inDs.RasterCount + 1):
-        # set the nodata value of the band
-        inDs.GetRasterBand(i).SetNoDataValue(nodata)
-
-    outDs = gdal.Translate('{}.xyz'.format(destination_cropped_gdf_path), inDs, format='XYZ',
-                           creationOptions=["ADD_HEADER_LINE=YES"])
-    outDs = None
-
-    try:
-        os.remove('{}.csv'.format(destination_cropped_gdf_path))
-    except OSError:
-        pass
-    os.rename('{}.xyz'.format(destination_cropped_gdf_path), '{}.csv'.format(destination_cropped_gdf_path))
-    radius = ((data2.res[0]*111139)**2 + (data2.res[0]*111139)**2)**(0.5)
-    return radius, nodata
-    print('csv correctly exported')
 
 ##############################################################################
 key = 0
@@ -1265,7 +1242,7 @@ elif which_mode == 'Single Cluster':
         
         raster_path = os.path.join(community_path, raster_name)
         csv_path = os.path.join(dashboarding_path, raster_name)
-        radius, nodata = raster_to_csv(raster_path, csv_path)
+        #radius, nodata = raster_to_csv(raster_path, csv_path)
         
         print('Points exported')
         
