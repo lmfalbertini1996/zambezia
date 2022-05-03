@@ -72,20 +72,6 @@ crs_dict = {'Uganda': 21095,
             'South_Sudan': 20136}  # 4251
 crs = crs_dict.get(country)
 
-
-# Exception for renewvia
-if 'renewvia' in run_directory_ID:
-    renewvia_data = pd.read_csv(os.path.join('Settings','renewvia.csv'), delimiter=';')
-    renewvia_dict = pd.Series(renewvia_data.Site_Renewvia.values,index=renewvia_data.ID).to_dict()
-    renewvia_rev_dict = pd.Series(renewvia_data.ID.values,index=renewvia_data.Site_Renewvia).to_dict()
-    x_dict = pd.Series(renewvia_data.x.values,index=renewvia_data.Site_Renewvia).to_dict()
-    y_dict = pd.Series(renewvia_data.y.values,index=renewvia_data.Site_Renewvia).to_dict()
-
-if 'cesi' in run_directory_ID:
-    cesi_data = pd.read_csv(os.path.join('Settings','cesi.csv'), delimiter=';')
-    cesi_dict = pd.Series(cesi_data.Site_Cesi.values,index=cesi_data.ID).to_dict()
-    cesi_rev_dict = pd.Series(cesi_data.ID.values,index=cesi_data.Site_Cesi).to_dict()
-
     
 # Importing all results to be put in the dashboard
 demographic_data = pd.read_csv(os.path.join(run_directory, 'Output', 'Analysis', 'Demographics', 'first_analysis_results_df.csv'), index_col=0)
