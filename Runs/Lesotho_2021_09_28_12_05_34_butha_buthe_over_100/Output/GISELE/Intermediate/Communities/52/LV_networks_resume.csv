@@ -1,0 +1,2 @@
+Cluster,Sub_cluster,Population,Load [kW],Grid_Length [km],Grid Cost [euro],Max length [km],Transformer_rated_power [kVA],Cost[euro]
+52.0,0.0,78,26.961980684472586,0.6941625725291185,6941.6257252911855,0.3782920931782296,50,1500
