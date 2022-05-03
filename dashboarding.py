@@ -16,6 +16,7 @@ import geopandas as gpd
 from shapely import wkt
 import xarray as xr
 #from osgeo import gdal
+import gdal
 from Code.directories_creation import create_directories_only_if_not_exist
 import pydeck as pdk
 import ast
