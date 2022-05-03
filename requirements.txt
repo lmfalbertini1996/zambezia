@@ -10,4 +10,3 @@ xarray
 pydeck
 numpy
 folium
-osgeo
