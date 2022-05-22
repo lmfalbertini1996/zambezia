@@ -593,7 +593,7 @@ elif which_mode == 'Single Cluster':
                         
                         
                         gisele_subs_gdf = gpd.read_file(os.path.join(gisele_output_path, 'secondary_substations', 'secondary_substations.shp'), crs=crs) 
-                        gisele_subs_gdf = gisele_subs_gdf.set_crs(crs)
+                        #gisele_subs_gdf = gisele_subs_gdf.set_crs(crs)
                         #gisele_subs_gdf = gpd.clip(gisele_subs_gdf, area_gdf)
                         # gisele_subs_gdf = sjoin(gisele_subs_gdf, area_gdf, how="left").dropna()
                         
@@ -610,7 +610,7 @@ elif which_mode == 'Single Cluster':
                         #MV
                            
                         gisele_mv_gdf = gpd.read_file(os.path.join(gisele_output_path, 'MV_grid', 'MV_grid.shp'), crs=crs) 
-                        gisele_mv_gdf = gisele_mv_gdf.set_crs(crs)
+                        #gisele_mv_gdf = gisele_mv_gdf.set_crs(crs)
                         #gisele_mv_gdf = gpd.clip(gisele_mv_gdf, area_gdf) 
                         #gisele_mv_gdf = sjoin(gisele_mv_gdf, area_gdf, how="left").dropna()
 
@@ -625,7 +625,7 @@ elif which_mode == 'Single Cluster':
                         
                         
                         gisele_lv_gdf = gpd.read_file(os.path.join(gisele_output_path, 'LV_grid', 'LV_grid.shp'), crs=crs) 
-                        gisele_lv_gdf = gisele_lv_gdf.set_crs(crs)
+                        #gisele_lv_gdf = gisele_lv_gdf.set_crs(crs)
                         #gisele_lv_gdf = gpd.clip(gisele_lv_gdf, area_gdf) 
                         gisele_lv_gdf = sjoin(gisele_lv_gdf, area_gdf, how="left").dropna()
                         
@@ -642,7 +642,7 @@ elif which_mode == 'Single Cluster':
                         
                         # GRID CONNECTION
                         gisele_connections_gdf = gpd.read_file(os.path.join(gisele_output_path, 'MILP_processed', 'output_connections', 'output_connections.shp'), crs=crs) 
-                        gisele_connections_gdf = gisele_connections_gdf.set_crs(crs)
+                        #gisele_connections_gdf = gisele_connections_gdf.set_crs(crs)
                         
                         #gisele_connections_gdf = sjoin(gisele_connections_gdf, area_gdf, how="left").dropna()
                         
