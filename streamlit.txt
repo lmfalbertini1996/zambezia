@@ -1,0 +1,3 @@
+cd C:\Users\darla\OneDrive - Politecnico di Milano\Documenti\GitHub\Vania-Test-2
+conda activate VANIA
+streamlit run dashboarding.py

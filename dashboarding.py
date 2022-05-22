@@ -570,7 +570,7 @@ elif which_mode == 'Single Cluster':
                                 return "yellow"
                             
                         gisele_users_gdf = gpd.read_file(os.path.join(gisele_output_path, 'final_users', 'final_users.shp'), crs=crs) 
-                        gisele_users_gdf = gisele_users_gdf.set_crs(crs)
+                        #gisele_users_gdf = gisele_users_gdf.set_crs(crs)
                         #gisele_users_gdf = gpd.clip(gisele_users_gdf, area_gdf)
                         gisele_users_gdf = sjoin(gisele_users_gdf, area_gdf, how="left").dropna()
 
