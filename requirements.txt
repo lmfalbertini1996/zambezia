@@ -10,3 +10,5 @@ xarray
 pydeck
 numpy
 folium
+pygeos
+rtree
