@@ -26,9 +26,6 @@ import time
 from folium import Circle
 from geopandas.tools import sjoin
 
-import s3fs
-fs = s3fs.S3FileSystem(anon=False)
-
 st.set_page_config(layout="wide")
 numerics = ['int16', 'int32', 'int64', 'float16', 'float32', 'float64']
 
@@ -43,8 +40,7 @@ def replace_name(stringa):
 ##############################################################################
 key = 0
 # Block for selecting the run directory based on the case study
-# working_directory = os.getcwd()
-working_directory = "s3://vania"
+working_directory = os.getcwd()
 database_folder_path = r'Data'  # UI
 country_level_db_path = os.path.join(database_folder_path, 'Case_Study', 'Country Level')
         

@@ -13,3 +13,4 @@ folium
 pygeos
 rtree
 rasterio
+s3fs
