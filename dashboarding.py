@@ -48,7 +48,7 @@ working_directory = "s3://vania"
 database_folder_path = 'Data'  # UI
 country_level_db_path = os.path.join(database_folder_path, 'Case_Study', 'Country Level')
         
-old_runs_complete = list(os.listdir(os.path.join(working_directory, "Data")))
+old_runs_complete = list(os.listdir(os.path.join(working_directory, 'Runs/')))
 #old_runs_complete = [old_runs_complete[5]]
 old_runs = [''.join([i for i in x if not i.isdigit()]) for x in list(os.listdir(os.path.join(working_directory, 'Runs')))]
 #old_runs = [old_runs[5]]
