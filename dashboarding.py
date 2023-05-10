@@ -1,9 +1,8 @@
 # -*- coding: utf-8 -*-
 """
-Created on Fri Sep 17 12:37:01 2021
-
+Created on Fri Sep 17
 """
-#lorenzo comment
+
 import os
 import streamlit as st
 import pandas as pd
@@ -14,6 +13,7 @@ import folium
 import geopandas as gpd
 from shapely import wkt
 import xarray as xr
+import rioxarray as rxr
 #from osgeo import gdal
 from Code.directories_creation import create_directories_only_if_not_exist
 import pydeck as pdk
@@ -158,7 +158,7 @@ if which_mode == 'Entire Area':
         with row1_2:
             "2D MAP"  
             key = 6
-            if st.checkbox("National Grid", False, key=key):
+            if st.checkbox("Existing National Grid", False, key=key):
                 grid = True
                 
             
@@ -246,24 +246,24 @@ if which_mode == 'Entire Area':
             if 'grid_gdf' in locals():
                 feature_group_a = folium.FeatureGroup(name='Grid Path')
                 feature_group_b = folium.FeatureGroup(name='Grid Info')
-                
+
                 status_col_name = [x for x in grid_gdf.columns if
                                    any(ext in x for ext in ['status', 'Status', 'STATUS'])]
-                
+
                 if len(status_col_name) >0:
                     status_col_name = status_col_name[0]
                 else:
                     status_col_name = 'no_status_column'
-            
+
                 voltage_col_name = [x for x in grid_gdf.columns if any(ext in x for ext in ['volt', 'Volt', 'VOLT'])]
-            
+
                 if len(voltage_col_name) > 0:
                     voltage_col_name = voltage_col_name[0]
-            
+
                 main_attribute = status_col_name
                 if main_attribute not in grid_gdf.columns:
                     main_attribute = voltage_col_name
-            
+
                 attribute_list = grid_gdf[main_attribute].unique()
                 # color_list = [style1, style2,style3, style4]
                 color_list = ['green', 'red', 'yellow', 'blue', 'black', 'orange', 'white'][:len(attribute_list)]
@@ -273,19 +273,19 @@ if which_mode == 'Entire Area':
                     # print(index, row[main_attribute], properties, '\n_______')
                     file = grid_gdf.iloc[[index]].to_json()
                     folium.features.Choropleth(geo_data=file, name=index, line_color=properties, line_weight=3).add_to(feature_group_a)
-                
+
                 style = {'fillColor': '#00000000', 'color': '#00000000'}
                 folium.GeoJson(grid_gdf.to_json(), name='_info', style_function=lambda x:style,
                                tooltip=folium.features.GeoJsonTooltip(fields = list(grid_gdf.columns[:-1]))).add_to(feature_group_b)
-                
+
                 feature_group_a.add_to(m)
                 feature_group_b.add_to(m)
-            
+
             feature_group.add_to(m)
             feature_group_1.add_to(m)
             feature_group_2.add_to(m)
 
-                        
+
             key = 7
             if st.checkbox("Zoom On Specific Community", True, key=key):
                 
@@ -322,7 +322,7 @@ if which_mode == 'Entire Area':
             folium.LayerControl().add_to(m)
 
             # Displaying a map         
-            
+
             folium_static(m)
 
     key = 9
@@ -498,26 +498,18 @@ elif which_mode == 'Single Cluster':
         if st.sidebar.checkbox("------ 2D MAPPING ------", True, key=key):
             # Displaying a map
             key = 11
-            if st.sidebar.checkbox("National Grid", False, key=key):
+           if st.sidebar.checkbox("Proposed National Grid", False, key=key):#dfdfd
                 grid = True
-            
-            key = 12
-            if st.sidebar.checkbox("Rasters ON", False, key=key):
-                rasters_on = True
-                
-            @st.cache(suppress_st_warning=True)
-            def single_cluster_2d_mapping():
                 "# %s 2D MAP" % (select)
-                
-
+                #shapefile = st.file_uploader("Upload Shapefile", type="shp")
                 if grid:
-                    grid_gdf = gpd.read_file(os.path.join(country_level_db_path, country[1:-1], 'Networks', 'grid.shp'))
+                    grid_gdf = gpd.read_file(os.path.join(country_level_db_path, 'Mozambique', 'Gisele', 'Genetic_MST_processed.shp'))
                     grid_gdf = grid_gdf[grid_gdf.geometry != None]
                     grid_gdf = grid_gdf.reset_index()
                     if grid_gdf.crs != 'epsg:4326':
                         grid_gdf = grid_gdf.to_crs(4326)
-                        
-                m = folium.Map(location = [float(info_gdf.geometry.y),float(info_gdf.geometry.x)], zoom_start=14)
+
+                m = folium.Map(location=[float(info_gdf.geometry.y), float(info_gdf.geometry.x)], zoom_start=14)
                 tile = folium.TileLayer(
                     tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
                     attr='Esri',
@@ -525,7 +517,7 @@ elif which_mode == 'Single Cluster':
                     overlay=False,
                     control=True
                 ).add_to(m)
-                
+
                 tile = folium.TileLayer(
                     tiles='http://mt0.google.com/vt/lyrs=y&hl=en&x={x}&y={y}&z={z}',
                     attr='Google',
@@ -533,7 +525,7 @@ elif which_mode == 'Single Cluster':
                     overlay=False,
                     control=True
                 ).add_to(m)
-                
+
                 tile = folium.TileLayer(
                     tiles='http://mt0.google.com/vt/lyrs=m&hl=en&x={x}&y={y}&z={z}',
                     attr='Google',
@@ -541,14 +533,13 @@ elif which_mode == 'Single Cluster':
                     overlay=False,
                     control=True
                 ).add_to(m)
-                
+
                 folium.TileLayer('stamentoner').add_to(m)
-                
+
                 style1 = {'fillColor': '#228B22', 'lineColor': '#228B22'}
                 style2 = {'fillColor': '#00FFFFFF', 'lineColor': '#00FFFFFF'}
                 style3 = {'fillColor': 'green', 'color': 'green'}
                 style4 = {'fillColor': 'red', 'color': 'red'}
-                
                 
                 if gisele == 'Yes':
                     
@@ -772,59 +763,6 @@ elif which_mode == 'Single Cluster':
                         
                     feature_group_a.add_to(m)
                     feature_group_b.add_to(m)
-                    
-                        
-            
-                #raster_list = [x for x in os.listdir(community_path) if '.tif' in x] 
-                if rasters_on:
-                    for file in raster_list_2d:
-                        print('----' + file)
-                        file_path = os.path.join(community_path, file)
-        
-                        if 'tif' in file:      
-                            data2 = xr.open_rasterio(file_path)
-                            if len(data2.nodatavals) == 100:
-                                no_data = float(data2.nodatavals)
-                            else:
-                                no_data = float(data2.nodatavals[0])
-                            # print('no data: ' + str(no_data))
-                            #data = data2[0].where(xr.DataArray(data2[0].values >= 0,dims=["y", "x"]), drop=True)
-                            data = data2[0].where(xr.DataArray(data2[0].values != no_data,dims=["y", "x"]), drop=True)  
-                            data.values[data.values < 0] = np.nan
-                                               
-                            if data.size > 0:
-                                lon, lat = np.meshgrid(data.x.values.astype(np.float64), data.y.values.astype(np.float64))
-                                source_extent = [lat.min(), lon.min(), lat.max(), lon.max()]
-                                
-                                data = np.array(data)
-                                #data = np.asarray(data)
-                                #data[data < 0] = np.nan()
-                                
-                                normed_data = (data - np.nanmin(data)) / (np.nanmax(data) - np.nanmin(data))
-                                cm = plt.cm.get_cmap('viridis')
-                                colored_data = cm(normed_data)
-                
-                                folium.raster_layers.ImageOverlay(colored_data,
-                                                                  [[lat.min(), lon.min()], [lat.max(), lon.max()]],
-                                                                  #colormap=cm.viridis,
-                                                                  opacity=0.5, name = file.split('.')[0], show=False).add_to(m)                      
-                            
-        
-                
-
-                
-                        
-                folium.plugins.Draw(export=True, filename='data.geojson', position='topleft', draw_options=None,
-                                    edit_options=None).add_to(m)
-                folium.plugins.Fullscreen(position='topleft', title='Full Screen', title_cancel='Exit Full Screen',
-                                          force_separate_button=False).add_to(m)
-                folium.plugins.MeasureControl(position='bottomleft', primary_length_unit='meters', secondary_length_unit='miles',
-                                              primary_area_unit='sqmeters', secondary_area_unit='acres').add_to(m)
-                folium.LayerControl(position='bottomleft').add_to(m)
-                folium_static(m)
-                m.save('map_for_cluster_137.html')
-            
-            single_cluster_2d_mapping()
 
     # GISELE SECTION
     area_gdf = gpd.read_file(os.path.join(community_path, '_commun_{0}.shp'.format(select))).to_crs(crs)
@@ -840,44 +778,44 @@ elif which_mode == 'Single Cluster':
             
             with row1_1_1:
                 '# GISELE : \n # Power System'
-                ###  FINANCIAL ANALYSIS
-                gisele_input_path = os.path.join(run_directory, 'Output', 'GISELE', 'Input')
-                community_boundaries_gdf = gpd.read_file(os.path.join(gisele_input_path, 'Communities_boundaries', 'Communities_boundaries.shp'), crs=crs) 
-                community_boundaries_gdf['aleks_ID'] = ['C{0}'.format(x) for x in list(community_boundaries_gdf.cluster_ID)]
+                Microgrid = gpd.read_file(os.path.join(country_level_db_path, country, 'Networks', 'mg.geojson'))
+                #gisele_input_path = os.path.join(run_directory, 'Output', 'GISELE', 'Input')
+                #community_boundaries_gdf = gpd.read_file(os.path.join(gisele_input_path, 'Communities_boundaries', 'Communities_boundaries.shp'), crs=crs)
+                #community_boundaries_gdf['aleks_ID'] = ['C{0}'.format(x) for x in list(community_boundaries_gdf.cluster_ID)]
                 
                 
-                ID_dict = pd.Series(community_boundaries_gdf.geometry.values, index=community_boundaries_gdf.aleks_ID.values).to_dict()
+                #ID_dict = pd.Series(community_boundaries_gdf.geometry.values, index=community_boundaries_gdf.aleks_ID.values).to_dict()
                 
-                intermediate_path = os.path.join(run_directory, 'Output', 'GISELE', 'Intermediate')
+                #intermediate_path = os.path.join(run_directory, 'Output', 'GISELE', 'Intermediate')
                 
-                overall_microgrid_df = pd.read_csv(os.path.join(intermediate_path, 'Microgrid', 'microgrids.csv'), delimiter=';')
-                overall_microgrid_df['geometry'] = overall_microgrid_df['Cluster'].map(ID_dict)
-                overall_microgrid_gdf = gpd.GeoDataFrame(overall_microgrid_df, geometry='geometry', crs=crs)
+                #overall_microgrid_df = pd.read_csv(os.path.join(intermediate_path, 'Microgrid', 'microgrids.csv'), delimiter=';')
+                #overall_microgrid_df['geometry'] = overall_microgrid_df['Cluster'].map(ID_dict)
+                #overall_microgrid_gdf = gpd.GeoDataFrame(overall_microgrid_df, geometry='geometry', crs=crs)
                 
-                microgrid_gdf = sjoin(overall_microgrid_gdf, area_gdf, how="left").dropna()
+                #microgrid_gdf = sjoin(overall_microgrid_gdf, area_gdf, how="left").dropna()
                 
-                microgrid_df_trans = pd.DataFrame(microgrid_gdf).drop(columns=['geometry', 'index_right', 'FID'])
-                microgrid_df = microgrid_df_trans.T
-                microgrid_df[microgrid_df.columns[0]] = [str(x) for x in microgrid_df[microgrid_df.columns[0]]]
-                st.dataframe(microgrid_df)
+                #microgrid_df_trans = pd.DataFrame(microgrid_gdf).drop(columns=['geometry', 'index_right', 'FID'])
+                #microgrid_df = microgrid_df_trans.T
+                #microgrid_df[microgrid_df.columns[0]] = [str(x) for x in microgrid_df[microgrid_df.columns[0]]]
+                #st.dataframe(microgrid_df)
     
             with row1_1_2:
                 '# GISELE : \n # Internal Grid'
     
                  
-                output_path = os.path.join(run_directory, 'Output', 'GISELE', 'Output')
+                #output_path = os.path.join(run_directory, 'Output', 'GISELE', 'Output')
                 
-                overall_lv_df = pd.read_csv(os.path.join(output_path, 'LV_resume.csv'), index_col=0)
-                overall_lv_df['aleks_ID'] = ['C{0}'.format(int(x)) for x in list(overall_lv_df.Cluster)]
-                overall_lv_df['geometry'] = overall_lv_df['aleks_ID'].map(ID_dict)
-                overall_lv_gdf = gpd.GeoDataFrame(overall_lv_df, geometry='geometry', crs=crs)
+                #overall_lv_df = pd.read_csv(os.path.join(output_path, 'LV_resume.csv'), index_col=0)
+               # overall_lv_df['aleks_ID'] = ['C{0}'.format(int(x)) for x in list(overall_lv_df.Cluster)]
+                #overall_lv_df['geometry'] = overall_lv_df['aleks_ID'].map(ID_dict)
+                #overall_lv_gdf = gpd.GeoDataFrame(overall_lv_df, geometry='geometry', crs=crs)
                 
-                lv_gdf = sjoin(overall_lv_gdf, area_gdf, how="left").dropna()
-                lv_gdf['Cluster'] = lv_gdf['aleks_ID']
-                lv_df = pd.DataFrame(lv_gdf).drop(columns=['geometry', 'index_right', 'FID', 'aleks_ID'])
-                lv_df[lv_df.columns[0]] = [str(x) for x in lv_df[lv_df.columns[0]]]
+                #lv_gdf = sjoin(overall_lv_gdf, area_gdf, how="left").dropna()
+                #lv_gdf['Cluster'] = lv_gdf['aleks_ID']
+                #lv_df = pd.DataFrame(lv_gdf).drop(columns=['geometry', 'index_right', 'FID', 'aleks_ID'])
+                #lv_df[lv_df.columns[0]] = [str(x) for x in lv_df[lv_df.columns[0]]]
                 
-                st.dataframe(lv_df)
+                #st.dataframe(lv_df)
             
             with row1_2_1:
                 '# System Total Cost [kEUR]'
@@ -982,13 +920,7 @@ elif which_mode == 'Single Cluster':
                 year_pop_slider = year_pop_slider
                 
                 with row2_2:            
-                    
-                    st.subheader("Animation")
-                    animations_pop = {"None": None, "Slow": 0.4, "Medium": 0.2, "Fast": 0.05}
-                    key += 1
-                    animate_pop = st.selectbox("", options=list(animations_pop.keys()), index=0, key=key)
-                    
-                    
+
                     name
                     st.line_chart(trend_data, width = 1300,height=350)
                     
@@ -997,11 +929,8 @@ elif which_mode == 'Single Cluster':
                     year_slider_pop = st.empty()
                     deck_map_pop = st.empty()
                     # Setup presentation widgets
-                    
-                    animation_speed_pop = animations_pop[animate_pop]
-                            
-                
-                
+
+
                 year_pop = year_pop_slider - 1
                 i_pop = 0
                 
@@ -1016,14 +945,14 @@ elif which_mode == 'Single Cluster':
                     i_pop += 1
                     
                     file_path_pop = os.path.join(community_path, file_pop)
-                    data2_pop = xr.open_rasterio(file_path_pop)
+                    data2_pop = rxr.open_rasterio(file_path_pop)
                 
                     if len(data2_pop.nodatavals) == 100:
                         no_data_pop = float(data2_pop.nodatavals)
                     else:
                         no_data_pop = float(data2_pop.nodatavals[0])
                         
-                    data_pop = data2_pop[0].where(xr.DataArray(data2_pop[0].values != no_data_pop,dims=["y", "x"]), drop=True)  
+                    data_pop = data2_pop[0].where(rxr.DataArray(data2_pop[0].values != no_data_pop,dims=["y", "x"]), drop=True)
                     data_pop.values[data_pop.values < 0] = 0
                     
                     
@@ -1108,8 +1037,7 @@ elif which_mode == 'Single Cluster':
             select_crops = crops_names
             #get the state selected in the selectbox
             selected_community = crops_data[crops_data.index == select] 
-            
-            
+
             
             state_total = get_total_dataframe(selected_community)
             state_total['Production'] = [int(x) for x in state_total['Production']]
@@ -1139,15 +1067,6 @@ elif which_mode == 'Single Cluster':
             landcovers_df = landcovers_df[landcovers_df['percentage'] > 0]
             
             key = 20
-            with row4_1:
-                labels = landcovers_df['land_cover_type']
-                sizes = landcovers_df['percentage']
-
-                fig3 = px.pie(landcovers_df, values=landcovers_df.percentage, names=landcovers_df.land_cover_type)
-                fig3.update_layout(title="<b>Land Cover Types [%] </b>")
-                st.plotly_chart(fig3)
-                
-            
             with row4_2:
                 if not state_total.empty:
                     state_total_graph = px.bar(
@@ -1216,30 +1135,4 @@ elif which_mode == 'Single Cluster':
                     if len(single_dimensions) > 3:
                         plot_bars(3)
 
-                
-        elif which_mode == 'Compare Clusters': 
-            st.write('Functionality still to be implemented')
-    
-    # 3D MAPPING
-    key = 23
-    mapping_3d = st.sidebar.selectbox('------ 3D MAPPING ------',['ON', 'OFF'], index=1)
-    if mapping_3d == 'ON':
-        "# %s 3D MAP" % (select)
-        key = 24        
-        raster_list_3d = [x.split('.')[0] for x in raster_list_3d]
-        raster_name = st.selectbox('Select the Data to Plot',raster_list_3d, index = 1)
-        
-        #raster_name = 'Harmonized_DN_NTL_2018_simVIIRS'
-        
-        raster_path = os.path.join(community_path, raster_name)
-        csv_path = os.path.join(dashboarding_path, raster_name)
-        #radius, nodata = raster_to_csv(raster_path, csv_path)
-        
-        print('Points exported')
-        
-    
     # =============================================================================
-    
-
-            
-        
