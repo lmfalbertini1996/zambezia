@@ -2,7 +2,6 @@
 """
 Created on Fri Sep 17 12:37:01 2021
 
-@author: nondarloavedere
 """
 #lorenzo comment
 import os
@@ -1240,59 +1239,6 @@ elif which_mode == 'Single Cluster':
         
     
     # =============================================================================
-    #     buildings_path = os.path.join(community_path, 'clipped_buildings.csv')
-    #     data = pd.read_csv(buildings_path, delimiter = ' ')
-    #     data = data[data.Z > 0]
-    # =============================================================================
-        
-    
-# =============================================================================
-#         data = pd.read_csv('{}.csv'.format(csv_path), delimiter = ' ')
-#         #data = data[data.Z > 0]
-#         data = data[data.Z != nodata]
-#         
-#         html_text = '<b>{0}_class:</b>'.format(raster_name) +' {elevationValue}'
-#         elevation_scale = min([max(data.Z),15])
-#     
-#         
-#         def map(data, lat, lon, zoom):
-#             st.write(pdk.Deck(
-#                 map_style="mapbox://styles/mapbox/satellite-streets-v11",
-#                 
-#                 initial_view_state={
-#                     "latitude": lat,
-#                     "longitude": lon,
-#                     "zoom": zoom,
-#                     "pitch": 50
-#                 },
-#                 
-#                 tooltip={
-#                     'html': html_text,
-#                     "style": {"background": "grey", "color": "white", "font-family": '"Helvetica Neue", Arial', "z-index": "10000"
-#                     }
-#                 },
-#                 layers=[
-#                     pdk.Layer(
-#                         "HexagonLayer", #['HexagonLayer', 'GridLayer']
-#                         data=data,
-#                         opacity=0.3,
-#                         get_position=["X", "Y"],
-#                         #get_elevation="Z",
-#                         auto_highlight=True,
-#                         radius= radius, #['cellSize', 'get_radius', 'radius']
-#                         elevation_scale=elevation_scale,
-#                         elevation_range=[0, max(data.Z)],
-#                         pickable=True,
-#                         extruded=True
-#                     ),
-#                 ]
-#             ))
-#     
-#         map(data, data.Y.mean(), data.X.mean(), 14)
-#     
-#     
-#     
-# =============================================================================
     
 
             
