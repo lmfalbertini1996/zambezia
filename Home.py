@@ -23,7 +23,7 @@ with col3:
 
 st.write("""***""")
 
-image = Image.open('TERESA.png')
+image = Image.open('Images\TERESA.png')
 st.image(image, use_column_width=True)
 
 st.write("""
@@ -39,7 +39,7 @@ with col1:
             ## A product by Politecnico di Milano
              """)
 with col2:
-    image = Image.open('Logo_poli.jpg')
+    image = Image.open('Images\Logo_poli.jpg')
     st.image(image, use_column_width=True)
 
 st.write("""
@@ -75,7 +75,7 @@ with col1:
             
              """)
 with col2:
-    image = Image.open('SDG7.png')
+    image = Image.open('Images\SDG7.png')
     st.image(image, use_column_width=True)
 
 st.write("""
@@ -104,7 +104,7 @@ with col1:
             ##  FONDAZIONE CARIPLO E SANPAOLO
                          """)
 with col2:
-    image = Image.open('FONDAZIONECARIPLO.png') #TO MODIFY
+    image = Image.open('Images\FONDAZIONECARIPLO.png') #TO MODIFY
     st.image(image, use_column_width=True)
 
 st.write("""
@@ -127,7 +127,7 @@ with col1:
             
              """)
 with col2:
-    image = Image.open('ICEI.png')
+    image = Image.open('Images\ICEI.png')
     st.image(image, use_column_width=True)
 
 st.write("""
