@@ -57,8 +57,8 @@ st.write("""
         
         """)
 
-#with open("Layout.pdf", "rb") as pdf_file:
-    #PDFbyte = pdf_file.read()
+with open("Images\Final_Report.pdf", "rb") as pdf_file:
+    PDFbyte = pdf_file.read()
 
     st.download_button(label="Download REPORT",
                        data=PDFbyte,
@@ -101,23 +101,24 @@ col1, col2 = st.columns([5,2])
 with col1:
 
     st.write("""
-            ##  FONDAZIONE CARIPLO E SANPAOLO
+            ##  Innovazione per lo sviluppo: FONDAZIONE CARIPLO E COMPAGNIA DI SANPAOLO
                          """)
 with col2:
-    image = Image.open('Images\FONDAZIONECARIPLO.png') #TO MODIFY
+    image = Image.open('Images\Innovazione.png')
     st.image(image, use_column_width=True)
 
 st.write("""
-       "TO MODIFY: For 30 years, Fondazione Cariplo has been promoting the life of communities, supporting those who operate in the area and are closest to people's needs. The distances within our communities are increasing, making them more fragmented and fragile. Today more than ever, however, there is a need to shorten these distances in order to have strong and inclusive communities, to support people's lives and to have strong institutions capable of reconciling different needs and directing resources and choices towards a better future for all and in which all can recognise themselves"
-               """)
+       Innovation for development is a program fostering innovation in international development assistance. Promoted by Fondazione Cariplo and Fondazione Compagnia di San Paolo, the program seeks to accelerate innovation in international development assistance by everaging open innovation, training, networking, and is implemented by engaging partners operating in the technology and innovation realm (data for development, digital manufacturing, ICT for Development).
+       """)
 
 #url4 = 'https://www.fondazionecariplo.it/'
 #if st.button('FONDAZIONE CARIPLO'):
  #   webbrowser.open_new_tab(url4)
     
-url10 = '[FONDAZIONE CARIPLO](https://www.fondazionecariplo.it/)'
-st.markdown(url10, unsafe_allow_html=True)
-    
+url10 = '[FONDAZIONE CARIPLO](https://innovazionesviluppo.org/)'
+if st.button('Innovazione per lo Sviluppo'):
+    webbrowser.open_new_tab(url10)
+
 st.write("""***""")
   
 col1, col2 = st.columns([5,2])
@@ -164,17 +165,17 @@ Marco Merlo: marco.merlo@polimi.it
         
 ***
          """)
-
-add_selectbox = st.sidebar.selectbox(
-    "Do you want to contact us?",
-    ("Email", "Facebook", "Phone")
+st.sidebar.title("Are you curious?")
+st.sidebar.info(
+    """
+    You can find our contacts at the end of the page: We are waiting for your suggestions and questions.
+    """
 )
-
 
 st.sidebar.title("About")
 st.sidebar.info(
     """
-    Web App URL: <https://github.com/lmfalbertini1996/lmfalbertini_test1/blob/main/Home.py>
-    GitHub repository: <https://github.com/lmfalbertini1996/lmfalbertini_test1>
+    Web App URL: <DA AGGIUNGERE>
+    GitHub repository: <https://github.com/lmfalbertini1996/zambezia.git>
     """
 )
