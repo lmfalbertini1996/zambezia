@@ -293,7 +293,7 @@ file_gdf = file_gdf.sort_values('Community')
 ##############################################################################
 
 which_modes = ['Entire Area', 'Single Cluster', 'Compare Clusters']
-which_mode = st.sidebar.selectbox('Select the Mode', which_modes, index=1)
+which_mode = st.sidebar.selectbox('Select the Mode', which_modes, index=0)
 
 
 if which_mode == 'Entire Area':
@@ -307,11 +307,13 @@ if which_mode == 'Entire Area':
 
     # 2D MAPPING
     key = 5
-    mapping_2d = st.sidebar.selectbox('------ 2D MAPPING ------',['ON', 'OFF'],key=key, index=0)
+    mapping_2d = st.sidebar.selectbox('------ 2D MAPPING ------',[ 'ON','OFF'],key=key, index=0)
 
     if mapping_2d == 'ON':
-
+        key=1000
         with row1_1:
+            color_communities = st.selectbox('------ Coloring of communities ------',
+                                             ['Energy requirement per capita', 'Type', 'Uniform'], key=key, index=2)
             long = file_gdf.geometry.centroid.x.mean()
             lat = file_gdf.geometry.centroid.y.mean()
             m = folium.Map(location=[lat, long], zoom_start=10, show=True)
@@ -346,13 +348,49 @@ if which_mode == 'Entire Area':
             style3 = {'fillColor': 'green', 'color': 'green'}
             style4 = {'fillColor': 'red', 'color': 'red'}
 
-            feature_group_1 = folium.FeatureGroup(name='Surveyed clusters', show=True)
 
-            # folium_static(m)
+            style_low = {'fillColor': 'orange', 'color': 'black'}
+            style_med = {'fillColor': 'red', 'color': 'black'}
+            style_high = {'fillColor': 'black', 'color': 'black'}
 
+            feature_group_1 = folium.FeatureGroup(name='All surveyed communities', show=True)
+            folium.GeoJson(file_gdf.to_json(), name='All surveyed communities',
+                           style_function=lambda x: style3).add_to(feature_group_1)
+            if color_communities=='Type':
+                legend = pd.DataFrame({'Color': ['orange', 'red', 'black'],
+                                       'Significance': ['Rural', 'Semi-urban',
+                                                        'Urban']})
+                st.dataframe(legend)
+                feature_group_2 = folium.FeatureGroup(name='Rural', show=True)
+                feature_group_3 = folium.FeatureGroup(name='Semi-urban', show=True)
+                feature_group_4 = folium.FeatureGroup(name='Urban', show=True)
 
-            folium.GeoJson(file_gdf.to_json(), name='Surveyed communities',
-                               style_function=lambda x: style3).add_to(feature_group_1)
+                folium.GeoJson(file_gdf[file_gdf['type']=='Rural'].to_json(), name='Rural',
+                               style_function=lambda x: style_low).add_to(feature_group_2)
+                folium.GeoJson(file_gdf[file_gdf['type']=='Suburban'].to_json(), name='Semi-urban',
+                               style_function=lambda x: style_med).add_to(feature_group_3)
+                folium.GeoJson(file_gdf[file_gdf['type']== 'City'].to_json(),
+                               name='Urban',
+                               style_function=lambda x: style_high).add_to(feature_group_4)
+                feature_group_2.add_to(m)
+                feature_group_3.add_to(m)
+                feature_group_4.add_to(m)
+            elif color_communities=='Energy requirement per capita':
+                legend=pd.DataFrame({'Color':['orange','red','black'],'Significance':['Low energy requirement','Medium energy requirement','High energy requirement']})
+                st.dataframe(legend)
+                feature_group_2 = folium.FeatureGroup(name='Low needs (<600Wh/pp)', show=True)
+                feature_group_3 = folium.FeatureGroup(name='Medium needs (600-1500Wh/pp)', show=True)
+                feature_group_4 = folium.FeatureGroup(name='Large needs (>1500Wh/pp)', show=True)
+
+                folium.GeoJson(file_gdf[file_gdf['energy_daily_pp Wh']<600].to_json(), name='Low needs (<600Wh/pp)',
+                               style_function=lambda x: style_low).add_to(feature_group_2)
+                folium.GeoJson(file_gdf[(file_gdf['energy_daily_pp Wh']>600) & (file_gdf['energy_daily_pp Wh']<1500)].to_json(), name='Medium needs (600-1500Wh/pp)',
+                               style_function=lambda x: style_med).add_to(feature_group_3)
+                folium.GeoJson(file_gdf[file_gdf['energy_daily_pp Wh']>1500].to_json(), name='Large needs (>1500Wh/pp)',
+                               style_function=lambda x: style_high).add_to(feature_group_4)
+                feature_group_2.add_to(m)
+                feature_group_3.add_to(m)
+                feature_group_4.add_to(m)
 
             feature_group = folium.FeatureGroup(name='Clusters Info', show=False)
 
@@ -373,6 +411,7 @@ if which_mode == 'Entire Area':
 
             feature_group.add_to(m)
             feature_group_1.add_to(m)
+
 
             #
             #
@@ -455,13 +494,13 @@ if which_mode == 'Entire Area':
 
             key = 12
             initial_index_y = ['Average_Income' == i for i in file_gdf.columns].index(True)
-            y_axis = st.selectbox('Select the parameter on the x-axis:',
+            y_axis = st.selectbox('Select the parameter on the y-axis:',
                                          file_gdf.columns,
                                          key=key,
                                          index=initial_index_y)
             key = 13
             initial_index_color = ['Ele_access' == i for i in file_gdf.columns].index(True)
-            z_axis = st.selectbox('Select the parameter on the x-axis:',
+            z_axis = st.selectbox('Select the parameter on on which to color:',
                                          file_gdf.columns,
                                          key=key,
                                          index=initial_index_color)
