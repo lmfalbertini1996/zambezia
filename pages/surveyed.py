@@ -392,9 +392,9 @@ if which_mode == 'Entire Area':
                 feature_group_3.add_to(m)
                 feature_group_4.add_to(m)
 
-            feature_group = folium.FeatureGroup(name='Clusters Info', show=False)
+            feature_group = folium.FeatureGroup(name='Surveys Info', show=False)
 
-            for index, row in file_gdf.set_index('cluster_ID').iterrows():
+            for index, row in file_gdf.set_index('Comunidade').iterrows():
                 # df_ = pd.DataFrame(file_gdf.drop(columns=['geometry','polygons','centroid']).set_index('ID')).iloc(index)
 
                 text = pd.DataFrame(row).drop(['geometry']).to_html()
