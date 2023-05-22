@@ -873,6 +873,7 @@ elif which_mode == 'Single Cluster':
             st.plotly_chart(plot)
 
     load_profiles = st.sidebar.selectbox('------ Daily load profiles ------', ['Yes', 'No'], index=1)
+    key = 200
     if load_profiles == 'Yes':
         row3_1, row3_2 = st.columns((1, 1))
         with row3_1:
