@@ -1024,6 +1024,7 @@ elif which_mode == 'Compare Clusters':
                                     key=key,
                                     index=0)
     if compare_bar == 'Yes':
+        key=202
         select_parameter = st.selectbox('Select the survey parameter to compare with other communities:',
                                         options,
                                         key=key,
