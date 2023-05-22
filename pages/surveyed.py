@@ -203,7 +203,7 @@ def two_d_mapping(grid,country_level_db_path,country):
 
     # Displaying a map
 
-    folium_static(m)
+    folium_static(m, width=1500, height=800)
 
 
 ##############################################################################
