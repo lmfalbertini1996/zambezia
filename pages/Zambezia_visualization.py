@@ -1002,8 +1002,8 @@ elif which_mode == 'Single Cluster':
                             else:
                                 no_data = float(data2.nodatavals[0])
                             # print('no data: ' + str(no_data))
-                            #data = data2[0].where(xr.DataArray(data2[0].values >= 0,dims=["y", "x"]), drop=True)
-                            data = data2[0].where(xr.DataArray(data2[0].values != no_data,dims=["y", "x"]), drop=True)  
+                            #data = data2[0].where(xrx.DataArray(data2[0].values >= 0,dims=["y", "x"]), drop=True)
+                            data = data2[0].where(xrx.DataArray(data2[0].values != no_data,dims=["y", "x"]), drop=True)  
                             data.values[data.values < 0] = np.nan
                                                
                             if data.size > 0:
