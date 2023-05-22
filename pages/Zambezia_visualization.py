@@ -15,7 +15,7 @@ from streamlit_folium import folium_static
 import folium
 import geopandas as gpd
 from shapely import wkt
-import rioxarray as xrx
+#import rioxarray as xrx
 import xarray as xr
 #from osgeo import gdal
 from Code.directories_creation import create_directories_only_if_not_exist
@@ -1003,8 +1003,8 @@ elif which_mode == 'Single Cluster':
                             else:
                                 no_data = float(data2.nodatavals[0])
                             # print('no data: ' + str(no_data))
-                            #data = data2[0].where(xrx.DataArray(data2[0].values >= 0,dims=["y", "x"]), drop=True)
-                            data = data2[0].where(xrx.DataArray(data2[0].values != no_data,dims=["y", "x"]), drop=True)  
+                            #data = data2[0].where(xr.DataArray(data2[0].values >= 0,dims=["y", "x"]), drop=True)
+                            data = data2[0].where(xr.DataArray(data2[0].values != no_data,dims=["y", "x"]), drop=True)  
                             data.values[data.values < 0] = np.nan
                                                
                             if data.size > 0:
