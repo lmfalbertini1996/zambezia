@@ -854,6 +854,7 @@ elif which_mode == 'Single Cluster':
         with row2_2:
             options = ['Average_Expenditure','Average_Income', 'Average Willingness to pay','Total_survey',
                        'Max_Income', 'Min_Income','Ele_access','Territorial_lim', 'Political_issues', 'Money', 'Desinterest', 'Other']
+            key=200
             select_parameter = st.selectbox('Select the survey parameter to compare with other communities:',
                                             options,
                                             key=key,
