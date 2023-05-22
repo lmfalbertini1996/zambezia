@@ -550,7 +550,7 @@ if which_mode == 'Entire Area':
                 clusters = ['ID:'+str(i) for i in clusters]
                 plot = go.Figure(data=[go.Pie(labels=clusters, values=values)])
                 st.plotly_chart(plot)
-    key=14
+    key=15
     detailed_table_survey = st.sidebar.selectbox('------ Detailed Table Surveys------', ['ON', 'OFF'], key=key, index=1)
     if detailed_table_survey == "ON":
         "# Survey outcome"
@@ -564,7 +564,7 @@ if which_mode == 'Entire Area':
         file_gdf_for_table = file_gdf[survey_outcomes]
         st.dataframe(file_gdf_for_table)
 
-    key = 15
+    key = 16
     detailed_table_vania = st.sidebar.selectbox('------ Detailed Table Vania------', ['ON', 'OFF'], key=key, index=1)
     #key = 15
     if detailed_table_vania == "ON":
