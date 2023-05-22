@@ -23,8 +23,8 @@ with col3:
 
 st.write("""***""")
 
-#image = Image.open('zambezia\Images\TERESA.png')
-#st.image(image, use_column_width=True)
+image = Image.open('Images/TERESA.png')
+st.image(image, use_column_width=True)
 
 st.write("""
         # TERESA PROJECT: TEchnology for Rural Electrification in Sub-Saharan Africa
