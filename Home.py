@@ -23,7 +23,7 @@ with col3:
 
 st.write("""***""")
 
-#image = Image.open('Images\TERESA.png')
+#image = Image.open('zambezia\Images\TERESA.png')
 #st.image(image, use_column_width=True)
 
 st.write("""
@@ -39,7 +39,7 @@ with col1:
             ## A product by Politecnico di Milano
              """)
 with col2:
-    image = Image.open('Images\Logo_poli.jpg')
+    image = Image.open('zambezia\Images\Logo_poli.jpg')
     st.image(image, use_column_width=True)
 
 st.write("""
