@@ -39,7 +39,7 @@ with col1:
             ## A product by Politecnico di Milano
              """)
 with col2:
-    image = Image.open('zambezia\Images\Logo_poli.jpg')
+    image = Image.open('Images/Logo_poli.jpg')
     st.image(image, use_column_width=True)
 
 st.write("""
