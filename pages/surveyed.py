@@ -1018,6 +1018,7 @@ elif which_mode == 'Compare Clusters':
     options = ['Average_Expenditure', 'Average_Income', 'Average Willingness to pay', 'Total_survey',
                'Max_Income', 'Min_Income', 'Ele_access', 'Territorial_lim', 'Political_issues', 'Money', 'Desinterest',
                'Other']
+    key=201
     compare_bar = st.sidebar.selectbox('Would you like to use a bar plot to see the 2 communities among all others?',
                                     ['No','Yes'],
                                     key=key,
