@@ -57,7 +57,7 @@ st.write("""
         
         """)
 
-with open("Images\Final_Report.pdf", "rb") as pdf_file:
+with open("Images/Final_Report.pdf", "rb") as pdf_file:
     PDFbyte = pdf_file.read()
 
     st.download_button(label="Download REPORT",
@@ -75,7 +75,7 @@ with col1:
             
              """)
 with col2:
-    image = Image.open('Images\SDG7.png')
+    image = Image.open('Images/SDG7.png')
     st.image(image, use_column_width=True)
 
 st.write("""
@@ -104,7 +104,7 @@ with col1:
             ##  Innovazione per lo sviluppo: FONDAZIONE CARIPLO E COMPAGNIA DI SANPAOLO
                          """)
 with col2:
-    image = Image.open('Images\Innovazione.png')
+    image = Image.open('Images/Innovazione.png')
     st.image(image, use_column_width=True)
 
 st.write("""
@@ -128,7 +128,7 @@ with col1:
             
              """)
 with col2:
-    image = Image.open('Images\ICEI.png')
+    image = Image.open('Images/ICEI.png')
     st.image(image, use_column_width=True)
 
 st.write("""
