@@ -552,6 +552,7 @@ if which_mode == 'Entire Area':
                 st.plotly_chart(plot)
     key=14
     detailed_table_survey = st.sidebar.selectbox('------ Detailed Table Surveys------', ['ON', 'OFF'], key=key, index=1)
+    key=201
     if detailed_table_survey == "ON":
         "# Survey outcome"
 
