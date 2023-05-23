@@ -6,7 +6,7 @@ pandas
 plotly
 matplotlib
 shapely
-xarray
+xarray = 0.20.1
 rioxarray
 pydeck
 numpy
