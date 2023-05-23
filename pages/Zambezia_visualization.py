@@ -1467,6 +1467,7 @@ elif which_mode == 'Single Cluster':
                     if len(single_dimensions) > 3:
                         plot_bars(3)
 
+        key = 210
         if st.sidebar.checkbox("Load profile estimation", False, key=key):
 
 
