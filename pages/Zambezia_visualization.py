@@ -1490,6 +1490,7 @@ elif which_mode == 'Single Cluster':
                 [ 'PV [kW]', 'Wind [kW]', 'Diesel [kW]', 'BESS [kWh]', 'Inverter [kW]',
                  'Investment Cost [kEUR]', 'Replace Cost [kEUR]', 'Energy Produced [MWh]', 'Load unsupplied [%]',
                  'CO2 [kg]']]
+            key = 212
             microgrid = pd.DataFrame(microgrid.loc[file_gdf.loc[select,'cluster_ID'], :])
 
 
