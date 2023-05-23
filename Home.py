@@ -57,7 +57,7 @@ st.write("""
         
         """)
 
-with open("Images/Final_Report.pdf.pdf", "rb") as pdf_file:
+with open("Images/Final_Report.pdf", "rb") as pdf_file:
     PDFbyte = pdf_file.read()
 
     st.download_button(label="Download REPORT",
