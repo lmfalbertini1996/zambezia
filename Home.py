@@ -175,7 +175,7 @@ st.sidebar.info(
 st.sidebar.title("About")
 st.sidebar.info(
     """
-    Web App URL: <DA AGGIUNGERE>
+    Web App URL: <https://lmfalbertini1996-zambezia-home-ty9p8n.streamlit.app/>
     GitHub repository: <https://github.com/lmfalbertini1996/zambezia.git>
     """
 )
