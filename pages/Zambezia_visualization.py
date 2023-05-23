@@ -220,9 +220,8 @@ if which_mode == 'Entire Area':
 
             polygons_df = pd.read_csv(os.path.join(run_directory, 'Output', 'Analysis', 'Demographics', 'polygons.csv'))
 
-            polygons_gdf = gpd.GeoDataFrame(polygons_df)
-            polygons_gdf['geometry'] = polygons_gdf.polygons.apply(wkt.loads)
-            polygons_gdf = polygons_gdf.set_crs(4326)
+            polygons_df['geometry'] = polygons_df.polygons.apply(wkt.loads) 
+            polygons_gdf = gpd.GeoDataFrame(polygons_df,geometry='geometry',crs=4326)
 
             a = pd.merge(file_gdf.drop(columns=['polygons']), polygons_gdf, left_index=True, right_index=True)
 
