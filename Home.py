@@ -89,7 +89,7 @@ For more info and statistics, please click on the button "SDG 7".
     
     """)
 
-url4 = 'sdgs.un.org/goals/goal7'
+url4 = 'https://sdgs.un.org/goals/goal7'
 if st.button('SDG 7'):
     webbrowser.open_new_tab(url4)
     
