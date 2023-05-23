@@ -137,9 +137,9 @@ We implement cooperation programmes in Italy and across the world, with special 
 Priority targets across all our focus areas are vulnerable people, in particular youth and women"
                """)
 
-url5 = 'http://icei.it/'
-if st.button('ICEI'):
-    webbrowser.open_new_tab(url5)
+#url5 = 'http://icei.it/'
+#if st.button('ICEI'):
+    #webbrowser.open_new_tab(url5)
     
 st.write("""***""")
 
