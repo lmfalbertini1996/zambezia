@@ -125,7 +125,7 @@ style_low = {'fillColor': 'orange', 'color': 'orange'}
 style_med = {'fillColor': 'red', 'color': 'red'}
 style_high = {'fillColor': 'black', 'color': 'black'}
 
-if which_mode == 'Entire Area':  
+if which_mode == 'Entire Area':
     
     # Comparison with all the other communities based on input from user in dropdown menu
 
@@ -660,12 +660,14 @@ if which_mode == 'Entire Area':
 
             
         with row2_1:
+            key = 201
             comparison_dimensions_hist1 = st.selectbox("Select a parameter to visualize:",
                                                       options=file_gdf.select_dtypes(include=numerics).columns, index=7,
                                                       key=key)
 
             plot_hist(comparison_dimensions_hist1,key=200)
         with row2_2:
+            key = 301
             comparison_dimensions_hist2 = st.selectbox("Select a second parameter to visualize:",options=file_gdf.select_dtypes(include=numerics).columns,
                                                        index=15,key=key)
             plot_hist(comparison_dimensions_hist2,key=300)

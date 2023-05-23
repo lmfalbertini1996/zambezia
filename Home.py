@@ -57,7 +57,7 @@ st.write("""
         
         """)
 
-with open("Images/TERESA.pdf", "rb") as pdf_file:
+with open("Images/Final_Report.pdf", "rb") as pdf_file:
     PDFbyte = pdf_file.read()
 
     st.download_button(label="Download REPORT",
@@ -89,7 +89,7 @@ For more info and statistics, please click on the button "SDG 7".
     
     """)
 
-url4 = 'sdgs.un.org/goals/goal7'
+url4 = 'https://sdgs.un.org/goals/goal7'
 if st.button('SDG 7'):
     webbrowser.open_new_tab(url4)
     
@@ -115,7 +115,7 @@ st.write("""
 #if st.button('FONDAZIONE CARIPLO'):
  #   webbrowser.open_new_tab(url4)
     
-url10 = '[FONDAZIONE CARIPLO](https://innovazionesviluppo.org/)'
+url10 = 'https://innovazionesviluppo.org/'
 if st.button('Innovazione per lo Sviluppo'):
     webbrowser.open_new_tab(url10)
 
@@ -137,9 +137,9 @@ We implement cooperation programmes in Italy and across the world, with special 
 Priority targets across all our focus areas are vulnerable people, in particular youth and women"
                """)
 
-url5 = 'http://icei.it/'
-if st.button('ICEI'):
-    webbrowser.open_new_tab(url5)
+#url5 = 'http://icei.it/'
+#if st.button('ICEI'):
+    #webbrowser.open_new_tab(url5)
     
 st.write("""***""")
 
@@ -175,7 +175,7 @@ st.sidebar.info(
 st.sidebar.title("About")
 st.sidebar.info(
     """
-    Web App URL: <DA AGGIUNGERE>
+    Web App URL: <https://lmfalbertini1996-zambezia-home-ty9p8n.streamlit.app/>
     GitHub repository: <https://github.com/lmfalbertini1996/zambezia.git>
     """
 )
