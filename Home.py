@@ -115,7 +115,7 @@ st.write("""
 #if st.button('FONDAZIONE CARIPLO'):
  #   webbrowser.open_new_tab(url4)
     
-url10 = '[FONDAZIONE CARIPLO](https://innovazionesviluppo.org/)'
+url10 = 'https://innovazionesviluppo.org/'
 if st.button('Innovazione per lo Sviluppo'):
     webbrowser.open_new_tab(url10)
 
