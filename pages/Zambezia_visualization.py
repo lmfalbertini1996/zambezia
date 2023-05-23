@@ -120,6 +120,11 @@ file_gdf = file_gdf.sort_values('Community')
 which_modes = ['Entire Area', 'Single Cluster', 'Compare Clusters']
 which_mode = st.sidebar.selectbox('Select the Mode', which_modes, index=0)
 
+
+style_low = {'fillColor': 'orange', 'color': 'orange'}
+style_med = {'fillColor': 'red', 'color': 'red'}
+style_high = {'fillColor': 'black', 'color': 'black'}
+
 if which_mode == 'Entire Area':  
     
     # Comparison with all the other communities based on input from user in dropdown menu
@@ -160,6 +165,12 @@ if which_mode == 'Entire Area':
 
     if mapping_2d == 'ON':    
         display_analysis = st.sidebar.selectbox('------ Display Analysis ------',['ON', 'OFF'], index=0)
+        coloring = 'Nightlights (electrification status)' #default in case analysis are not displayed.
+        if display_analysis == 'ON':
+            coloring = st.sidebar.selectbox('------ Community coloring ------',
+                                                    ['Nightlights (electrification status)', 'Type of community','Proposed electrification','OFF'],
+                                                    index=3, key=3000)
+
         grid = False
         with row1_2:
             #@st.cache(suppress_st_warning=True)
@@ -213,30 +224,73 @@ if which_mode == 'Entire Area':
             style2 = {'fillColor': '#00FFFFFF', 'lineColor': '#00FFFFFF'}
             style3 = {'fillColor': 'green', 'color': 'green'}
             style4 = {'fillColor': 'red', 'color': 'red'}
+            if coloring == 'Nightlights (electrification status)':
 
-            feature_group_1 = folium.FeatureGroup(name='Electrified Clusters', show=True)
-            feature_group_2 = folium.FeatureGroup(name='Non Electrified Clusters', show=True)
+                feature_group_1 = folium.FeatureGroup(name='Electrified Clusters', show=True)
+                feature_group_2 = folium.FeatureGroup(name='Non Electrified Clusters', show=True)
 
-
-            polygons_df = pd.read_csv(os.path.join(run_directory, 'Output', 'Analysis', 'Demographics', 'polygons.csv'))
-
-            polygons_gdf = gpd.GeoDataFrame(polygons_df)
-            polygons_gdf['geometry'] = polygons_gdf.polygons.apply(wkt.loads)
-            polygons_gdf = polygons_gdf.set_crs(4326)
-
-            a = pd.merge(file_gdf.drop(columns=['polygons']), polygons_gdf, left_index=True, right_index=True)
+                polygons_df = pd.read_csv(
+                    os.path.join(run_directory, 'Output', 'Analysis', 'Demographics', 'polygons.csv'))
 
 
-            if not polygons_gdf[polygons_gdf.night_lights == 0].empty:
-                folium.GeoJson(polygons_gdf[polygons_gdf.night_lights == 0].to_json(), name='non-electrified clusters',
-                                style_function=lambda x: style4).add_to(feature_group_2)
-            if not polygons_gdf[polygons_gdf.night_lights > 0].empty:
-                folium.GeoJson(polygons_gdf[polygons_gdf.night_lights > 0].to_json(), name='electrified clusters',
-                                style_function=lambda x: style3).add_to(feature_group_1)
+                polygons_df = pd.read_csv(os.path.join(run_directory, 'Output', 'Analysis', 'Demographics', 'polygons.csv'))
 
+                polygons_df['geometry'] = polygons_df.polygons.apply(wkt.loads)
+                polygons_gdf = gpd.GeoDataFrame(polygons_df, geometry='geometry', crs=4326)
+
+                a = pd.merge(file_gdf.drop(columns=['polygons']), polygons_gdf, left_index=True, right_index=True)
+
+
+                if not polygons_gdf[polygons_gdf.night_lights == 0].empty:
+                    folium.GeoJson(polygons_gdf[polygons_gdf.night_lights == 0].to_json(), name='non-electrified clusters',
+                                    style_function=lambda x: style4).add_to(feature_group_2)
+                if not polygons_gdf[polygons_gdf.night_lights > 0].empty:
+                    folium.GeoJson(polygons_gdf[polygons_gdf.night_lights > 0].to_json(), name='electrified clusters',
+                                    style_function=lambda x: style3).add_to(feature_group_1)
+
+                feature_group_1.add_to(m)
+                feature_group_2.add_to(m)
+
+            elif coloring == 'Type of community':
+                polygons_gdf = gpd.read_file(
+                    os.path.join(run_directory, 'Output', 'New_analysis', 'clusters_polygons','clusters_polygons.shp'))
+
+                if polygons_gdf.crs != 'epsg:4326':
+                    polygons_gdf = polygons_gdf.to_crs(4326)
+                feature_group_3 = folium.FeatureGroup(name='Rural', show=True)
+                feature_group_4 = folium.FeatureGroup(name='Semi-urban', show=True)
+                feature_group_5 = folium.FeatureGroup(name='Urban', show=True)
+
+                folium.GeoJson(polygons_gdf[polygons_gdf['type'] == 'Rural'].to_json(), name='Rural',
+                               style_function=lambda x: style_low).add_to(feature_group_3)
+                folium.GeoJson(polygons_gdf[polygons_gdf['type'] == 'Suburban'].to_json(), name='Semi-urban',
+                               style_function=lambda x: style_med).add_to(feature_group_4)
+                folium.GeoJson(polygons_gdf[(polygons_gdf['type'] == 'City') | (polygons_gdf['type'] == 'Large city')].to_json(),
+                               name='Urban',
+                               style_function=lambda x: style_high).add_to(feature_group_5)
+
+                feature_group_3.add_to(m)
+                feature_group_4.add_to(m)
+                feature_group_5.add_to(m)
+            elif coloring == 'Proposed electrification':
+                electrification = pd.read_csv(
+                    os.path.join(run_directory, 'Output', 'New_analysis', 'electrification_proposal.csv'))
+                polygons_gdf = gpd.read_file(
+                    os.path.join(run_directory, 'Output', 'New_analysis', 'clusters_polygons', 'clusters_polygons.shp'))
+                if polygons_gdf.crs != 'epsg:4326':
+                    polygons_gdf = polygons_gdf.to_crs(4326)
+                electrification['cluster_ID'] = electrification['cluster_ID'].astype(int)
+                merged = pd.merge(polygons_gdf,electrification,on='cluster_ID')
+                polygons_gdf['Electrification'] = merged['Electrification']
+                feature_group_6 = folium.FeatureGroup(name='Grid extension', show=True)
+                feature_group_7 = folium.FeatureGroup(name='Off-grid system', show=True)
+                folium.GeoJson(polygons_gdf[polygons_gdf['Electrification'] == 'national grid extension'].to_json(), name='Grid extension',
+                               style_function=lambda x: style4).add_to(feature_group_6)
+                folium.GeoJson(polygons_gdf[polygons_gdf['Electrification'] == 'off-grid system'].to_json(), name='Off-grid system',
+                               style_function=lambda x: style3).add_to(feature_group_7)
+                feature_group_7.add_to(m)
+                feature_group_6.add_to(m)
             feature_group = folium.FeatureGroup(name='Clusters Info', show=False)
-
-
             for index, row in file_gdf.set_index('ID').iterrows():
                 #df_ = pd.DataFrame(file_gdf.drop(columns=['geometry','polygons','centroid']).set_index('ID')).iloc(index)
 
@@ -291,15 +345,15 @@ if which_mode == 'Entire Area':
                 feature_group_b.add_to(m)
 
             feature_group.add_to(m)
-            feature_group_1.add_to(m)
-            feature_group_2.add_to(m)
+
 
             if display_analysis == 'ON':
-
                 list_colors = ['red','cyan','darkblue','purple','yellow','lime','magenta','olive','green','orange']
                 feature_group_subs = folium.FeatureGroup(name='Substations',show=True)
                 substations = gpd.read_file(
                     os.path.join(run_directory, 'Output', 'New_analysis', 'substations_zambezia'), index_col=0)
+
+
 
                 if substations.crs != 'epsg:4326':
                     substations = substations.to_crs(4326)
@@ -313,9 +367,16 @@ if which_mode == 'Entire Area':
                 feature_group_subs.add_to(m)
 
                 #add the lines
-                electric_lines = gpd.read_file(
-                    os.path.join(run_directory, 'Output', 'New_analysis', 'lines(with power)'))
+                line_routing = st.sidebar.selectbox("Line routing", ['Shortest distance','Least cost'],index=0, key=3001)
+                if line_routing == "Shortest distance":
+                    electric_lines = gpd.read_file(
+                        os.path.join(run_directory, 'Output', 'New_analysis', 'lines(with power)'))
+                    fields_line=['Power [kW]']
+                elif line_routing == "Least cost":
+                    electric_lines = gpd.read_file(
+                        os.path.join(run_directory, 'Output', 'New_analysis', 'lines_with_grid_of_points'))
 
+                    fields_line = ['Power [kW]','Length','Cost']
                 if electric_lines.crs != 'epsg:4326':
                     electric_lines = electric_lines.to_crs(4326)
                 feature_group_lines = folium.FeatureGroup(name='Electric lines', show=True)
@@ -339,6 +400,14 @@ if which_mode == 'Entire Area':
                 feature_group_communities.add_to(m)
 
                 unique_substations = communities[communities['PS']!='None(too far)'].PS.unique()
+                def substation_popup(i,unique_substations):
+                    text = pd.DataFrame({'Name':[unique_substations[i]]}).to_html()
+
+                    iframe = folium.IFrame(text, width=500, height=350)
+
+                    popup = folium.Popup(iframe, max_width=500)
+
+                    return popup
 
                 i=0
                 feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=True)
@@ -347,12 +416,15 @@ if which_mode == 'Entire Area':
                 line = folium.GeoJson(electric_lines[electric_lines['Sub_name'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'red'})
-                folium.features.GeoJsonPopup(fields=['Power [kW]'], labels=True).add_to(line)
+                folium.features.GeoJsonPopup(fields=fields_line, labels=True).add_to(line)
                 line.add_to(feature_group_communities)
                 geom = substations.loc[substations['Name']==unique_substations[i],'geometry'].values[0]
-                folium.Marker([geom.y, geom.x],
+                popup = substation_popup(i,unique_substations)
+                folium.Marker([geom.y, geom.x],popup=popup,
                                        icon=folium.Icon(color='red', icon='building-o', prefix='fa')).add_to(
                     feature_group_communities)
+
+
                 feature_group_communities.add_to(m)
 
                 i = 1
@@ -363,10 +435,11 @@ if which_mode == 'Entire Area':
                 line = folium.GeoJson(electric_lines[electric_lines['Sub_name'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'cyan'})
-                folium.features.GeoJsonPopup(fields=['Power [kW]'], labels=True).add_to(line)
+                folium.features.GeoJsonPopup(fields=fields_line, labels=True).add_to(line)
                 line.add_to(feature_group_communities)
                 geom = substations.loc[substations['Name'] == unique_substations[i], 'geometry'].values[0]
-                folium.Marker([geom.y, geom.x],
+                popup = substation_popup(i, unique_substations)
+                folium.Marker([geom.y, geom.x],popup=popup,
                               icon=folium.Icon(color='lightblue', icon='building-o', prefix='fa')).add_to(
                     feature_group_communities)
                 feature_group_communities.add_to(m)
@@ -379,10 +452,11 @@ if which_mode == 'Entire Area':
                 line=folium.GeoJson(electric_lines[electric_lines['Sub_name'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'darkblue'})
-                folium.features.GeoJsonPopup(fields=['Power [kW]'], labels=True).add_to(line)
+                folium.features.GeoJsonPopup(fields=fields_line, labels=True).add_to(line)
                 line.add_to(feature_group_communities)
                 geom = substations.loc[substations['Name'] == unique_substations[i], 'geometry'].values[0]
-                folium.Marker([geom.y, geom.x],
+                popup = substation_popup(i, unique_substations)
+                folium.Marker([geom.y, geom.x],popup=popup,
                               icon=folium.Icon(color='darkblue', icon='building-o', prefix='fa')).add_to(
                     feature_group_communities)
 
@@ -397,10 +471,11 @@ if which_mode == 'Entire Area':
                 line = folium.GeoJson(electric_lines[electric_lines['Sub_name'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'purple'})
-                folium.features.GeoJsonPopup(fields=['Power [kW]'], labels=True).add_to(line)
+                folium.features.GeoJsonPopup(fields=fields_line, labels=True).add_to(line)
                 line.add_to(feature_group_communities)
                 geom = substations.loc[substations['Name'] == unique_substations[i], 'geometry'].values[0]
-                folium.Marker([geom.y, geom.x],
+                popup = substation_popup(i, unique_substations)
+                folium.Marker([geom.y, geom.x],popup=popup,
                               icon=folium.Icon(color='darkpurple', icon='building-o', prefix='fa')).add_to(
                     feature_group_communities)
                 feature_group_communities.add_to(m)
@@ -413,10 +488,11 @@ if which_mode == 'Entire Area':
                 line = folium.GeoJson(electric_lines[electric_lines['Sub_name'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'yellow'})
-                folium.features.GeoJsonPopup(fields=['Power [kW]'], labels=True).add_to(line)
+                folium.features.GeoJsonPopup(fields=fields_line, labels=True).add_to(line)
                 line.add_to(feature_group_communities)
                 geom = substations.loc[substations['Name'] == unique_substations[i], 'geometry'].values[0]
-                folium.Marker([geom.y, geom.x],
+                popup = substation_popup(i, unique_substations)
+                folium.Marker([geom.y, geom.x],popup=popup,
                               icon=folium.Icon(color='beige', icon='building-o', prefix='fa')).add_to(
                     feature_group_communities)
                 feature_group_communities.add_to(m)
@@ -429,10 +505,11 @@ if which_mode == 'Entire Area':
                 line = folium.GeoJson(electric_lines[electric_lines['Sub_name'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'lime'}).add_to(feature_group_communities)
-                folium.features.GeoJsonPopup(fields=['Power [kW]'], labels=True).add_to(line)
+                folium.features.GeoJsonPopup(fields=fields_line, labels=True).add_to(line)
                 line.add_to(feature_group_communities)
                 geom = substations.loc[substations['Name'] == unique_substations[i], 'geometry'].values[0]
-                folium.Marker([geom.y, geom.x],
+                popup = substation_popup(i, unique_substations)
+                folium.Marker([geom.y, geom.x],popup=popup,
                               icon=folium.Icon(color='lightgreen', icon='building-o', prefix='fa')).add_to(
                     feature_group_communities)
                 feature_group_communities.add_to(m)
@@ -445,10 +522,11 @@ if which_mode == 'Entire Area':
                 line = folium.GeoJson(electric_lines[electric_lines['Sub_name'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'magenta'})
-                folium.features.GeoJsonPopup(fields=['Power [kW]'], labels=True).add_to(line)
+                folium.features.GeoJsonPopup(fields=fields_line, labels=True).add_to(line)
                 line.add_to(feature_group_communities)
                 geom = substations.loc[substations['Name'] == unique_substations[i], 'geometry'].values[0]
-                folium.Marker([geom.y, geom.x],
+                popup = substation_popup(i, unique_substations)
+                folium.Marker([geom.y, geom.x],popup=popup,
                               icon=folium.Icon(color='purple', icon='building-o', prefix='fa')).add_to(
                     feature_group_communities)
                 feature_group_communities.add_to(m)
@@ -461,10 +539,11 @@ if which_mode == 'Entire Area':
                 line = folium.GeoJson(electric_lines[electric_lines['Sub_name'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'olive'})
-                folium.features.GeoJsonPopup(fields=['Power [kW]'], labels=True).add_to(line)
+                folium.features.GeoJsonPopup(fields=fields_line, labels=True).add_to(line)
                 line.add_to(feature_group_communities)
                 geom = substations.loc[substations['Name'] == unique_substations[i], 'geometry'].values[0]
-                folium.Marker([geom.y, geom.x],
+                popup = substation_popup(i, unique_substations)
+                folium.Marker([geom.y, geom.x],popup=popup,
                               icon=folium.Icon(color='green', icon='building-o', prefix='fa')).add_to(
                     feature_group_communities)
                 feature_group_communities.add_to(m)
@@ -478,10 +557,11 @@ if which_mode == 'Entire Area':
                 line = folium.GeoJson(electric_lines[electric_lines['Sub_name'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'green'}).add_to(feature_group_communities)
-                folium.features.GeoJsonPopup(fields=['Power [kW]'], labels=True).add_to(line)
+                folium.features.GeoJsonPopup(fields=fields_line, labels=True).add_to(line)
                 line.add_to(feature_group_communities)
                 geom = substations.loc[substations['Name'] == unique_substations[i], 'geometry'].values[0]
-                folium.Marker([geom.y, geom.x],
+                popup = substation_popup(i, unique_substations)
+                folium.Marker([geom.y, geom.x],popup=popup,
                               icon=folium.Icon(color='darkgreen', icon='building-o', prefix='fa')).add_to(
                     feature_group_communities)
                 feature_group_communities.add_to(m)
@@ -494,10 +574,11 @@ if which_mode == 'Entire Area':
                 line = folium.GeoJson(electric_lines[electric_lines['Sub_name'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'orange'}).add_to(feature_group_communities)
-                folium.features.GeoJsonPopup(fields=['Power [kW]'], labels=True).add_to(line)
+                folium.features.GeoJsonPopup(fields=fields_line, labels=True).add_to(line)
                 line.add_to(feature_group_communities)
                 geom = substations.loc[substations['Name'] == unique_substations[i], 'geometry'].values[0]
-                folium.Marker([geom.y, geom.x],
+                popup = substation_popup(i, unique_substations)
+                folium.Marker([geom.y, geom.x],popup=popup,
                               icon=folium.Icon(color='orange', icon='building-o', prefix='fa')).add_to(
                     feature_group_communities)
                 feature_group_communities.add_to(m)
@@ -544,6 +625,23 @@ if which_mode == 'Entire Area':
             folium_static(m)
 
     key = 9
+    if st.sidebar.checkbox('------ Visualize electrification summary ------',False,key=3002):
+        row22_1, row22_2 = st.columns((1, 1))
+        with row22_1:
+            microgrid_summary = pd.DataFrame(microgrid[['PV [kW]','Wind [kW]','Diesel [kW]','BESS [kWh]','Investment Cost [kEUR]',
+                                                        'Replace Cost [kEUR]','CO2 [kg]']].sum())
+            microgrid_summary.loc['Number of communities'] = int(len(microgrid))
+            '## The below summary of all the microgrids optimised portfolios are calculations based on a 10-year timescale, hence the replace costs.'
+            st.dataframe(microgrid_summary.transpose())
+        with row22_2:
+            clusters_data = gpd.read_file(
+            os.path.join(run_directory, 'Output', 'New_analysis', 'Clusters_data'))
+            clusters_data = clusters_data[clusters_data['PS']!='None(too far)']
+            clusters_summary = pd.DataFrame(clusters_data.groupby(['PS'])['Power [kW]'].sum())
+            '## These are the worst case peak loading scenarios for the primary substations without considering contemporary coefficients.'
+            st.dataframe(clusters_summary.transpose())
+
+
     if st.sidebar.checkbox("------ Histograms ------", True, key=key):
         def plot_hist(var,key):
             #key_slider = random.random()
@@ -576,8 +674,8 @@ if which_mode == 'Entire Area':
 #################################################################################################
 elif which_mode == 'Single Cluster':
     # Side bar for selecting the community to be investigated
-    select = st.sidebar.selectbox('Select the Community',file_gdf.index, index=0)
-
+    select_clus_ID = st.sidebar.selectbox('Select the Community',file_gdf.cluster_ID, index=0)
+    select =  int(file_gdf.index[file_gdf['cluster_ID']==select_clus_ID].values[0])
     gisele = st.sidebar.selectbox('GISEle',['Yes','No'], index=1)
     
     select_id = list(file_gdf.index).index(select)
@@ -620,10 +718,10 @@ elif which_mode == 'Single Cluster':
         a['WorldPop Estimation'] = [int(i) for i in a['WorldPop Estimation']*max_pop_worldpop]
         
         
-        'The cluster namerated %s is located in %s. More precisely, with respect to\
+        'The cluster numerated %s is located in %s. More precisely, with respect to\
         the first level administrative division it is in %s, while in %s when \
         considering the second level.'\
-            % (select, 
+            % (select_clus_ID,
                country[1:-1], 
                str(info_gdf.admin_1.values)[2:-2], 
                str(info_gdf.admin_2.values)[2:-2])
@@ -694,10 +792,16 @@ elif which_mode == 'Single Cluster':
                 % (b[b[select] > 0].index[0],
                    round(int(info_gdf.night_lights.values), 2),
                    round(int(info_gdf.lights_build.values), 2))
+        electrification = gpd.read_file(
+            os.path.join(run_directory, 'Output', 'New_analysis', 'electrification_proposal.csv'))
+        electrification['cluster_ID'] = electrification['cluster_ID'].astype(int)
 
-        'Investigating the open-source databases and in coherence with the Multi-Tier Framework, we estimate a peak'\
-        'power of %s kW and daily consumption of %s kWh.'\
-            % (round(loads.loc[file_gdf.loc[select,'cluster_ID'],:].values[0]/1000,2),round(load_profiles.loc[file_gdf.loc[select,'cluster_ID'], :].sum()/1000,2))
+        'Investigating the open-source databases and in coherence with the Multi-Tier Framework, we classified this community as %s, and estimated '\
+        'a daily consumption of %s kWh with a peak power of %s kW. According to our analysis, it should be electrified with %s. '\
+            % (info_gdf['type'].values[0],
+               round(load_profiles.loc[file_gdf.loc[select,'cluster_ID'], :].sum()/1000,2),
+               round(loads.loc[file_gdf.loc[select,'cluster_ID'],:].values[0]/1000,2),
+               electrification.loc[electrification['cluster_ID']==2,'Electrification'].values[0])
     create_directories_only_if_not_exist(dashboarding_path, False)
 
 
@@ -710,9 +814,10 @@ elif which_mode == 'Single Cluster':
         if st.sidebar.checkbox("------ 2D MAPPING ------", True, key=key):
             # Displaying a map
             key = 11
-            if st.sidebar.checkbox("National Grid", False, key=key):
-                grid = True
-            
+            #if st.sidebar.checkbox("National Grid", False, key=key):
+            #    grid = True
+            #if st.sidebar.checkbox("Hospitals and schools",False,key=key):
+            #    hospitals_schools=True
             key = 12
             if st.sidebar.checkbox("Rasters ON", False, key=key):
                 rasters_on = True
@@ -722,16 +827,16 @@ elif which_mode == 'Single Cluster':
                 
             @st.cache(suppress_st_warning=True)
             def single_cluster_2d_mapping():
-                "# %s 2D MAP" % (select)
+                "# %s 2D MAP" % (select_clus_ID)
                 
 
-                if grid:
-                    grid_gdf = gpd.read_file(os.path.join(country_level_db_path, country[1:-1], 'Networks', 'grid.shp'))
-                    grid_gdf = grid_gdf[grid_gdf.geometry != None]
-                    grid_gdf = grid_gdf.reset_index()
-                    if grid_gdf.crs != 'epsg:4326':
-                        grid_gdf = grid_gdf.to_crs(4326)
-                        
+                # if grid:
+                #     grid_gdf = gpd.read_file(os.path.join(country_level_db_path, country[1:-1], 'Networks', 'grid.shp'))
+                #     grid_gdf = grid_gdf[grid_gdf.geometry != None]
+                #     grid_gdf = grid_gdf.reset_index()
+                #     if grid_gdf.crs != 'epsg:4326':
+                #         grid_gdf = grid_gdf.to_crs(4326)
+
                 m = folium.Map(location = [float(info_gdf.geometry.y),float(info_gdf.geometry.x)], zoom_start=14)
                 tile = folium.TileLayer(
                     tiles='https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
@@ -1491,19 +1596,34 @@ elif which_mode == 'Single Cluster':
                  'Investment Cost [kEUR]', 'Replace Cost [kEUR]', 'Energy Produced [MWh]', 'Load unsupplied [%]',
                  'CO2 [kg]']]
             key = key
-            microgrid = pd.DataFrame(microgrid.loc[file_gdf.loc[select,'cluster_ID'], :])
+            if select in microgrid.index:
+                microgrid = pd.DataFrame(microgrid.loc[file_gdf.loc[select,'cluster_ID'], :])
+                off_grid_solution=True
+            else:
+                off_grid_solution=False
 
 
             with row100_1:
-                "#     Outcome of the microgrid optimisation"
-                st.dataframe(microgrid)
+
+                if off_grid_solution:
+                    "#     Outcome of the microgrid optimisation"
+                    st.dataframe(microgrid)
+                else:
+                    electrification = gpd.read_file(
+                        os.path.join(run_directory, 'Output', 'New_analysis', 'electrification_proposal.csv'))
+                    electrification['cluster_ID']= electrification['cluster_ID'].astype(int)
+
+                    '## This cluster should be connected via an extension to the national grid, more precisely to substation %s.' \
+                        % (electrification.loc[
+                        electrification['cluster_ID'] == file_gdf.loc[select, 'cluster_ID'], 'PS'].values[0])
             with row100_2:
-                "#     Generation portfolio"
-                reasons = ['PV [kW]', 'Wind [kW]', 'Diesel [kW]']
-                values = [microgrid.loc[reason,:].values[0] for reason in reasons]
-                plot = go.Figure(data=[go.Pie(labels=reasons, values=values)])
-                plot.update_traces(hoverinfo='percent', textinfo='label+value')
-                st.plotly_chart(plot)
+                if off_grid_solution:
+                    "#     Generation portfolio"
+                    reasons = ['PV [kW]', 'Wind [kW]', 'Diesel [kW]']
+                    values = [microgrid.loc[reason,:].values[0] for reason in reasons]
+                    plot = go.Figure(data=[go.Pie(labels=reasons, values=values)])
+                    plot.update_traces(hoverinfo='percent', textinfo='label+value')
+                    st.plotly_chart(plot)
     
     # # 3D MAPPING
     # key = 23

@@ -580,8 +580,9 @@ if which_mode == 'Entire Area':
 # #################################################################################################
 elif which_mode == 'Single Cluster':
     # Side bar for selecting the community to be investigated
-    select = st.sidebar.selectbox('Select the Community',file_gdf.index, index=0)
-
+    select_name = st.sidebar.selectbox('Select the Community',file_gdf.Comunidade, index=0)
+    select = int(file_gdf.index[file_gdf['Comunidade']==select_name].values[0])
+    select
     #gisele = st.sidebar.selectbox('GISEle',['Yes','No'], index=1)
 
 
