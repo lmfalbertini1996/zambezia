@@ -1480,6 +1480,7 @@ elif which_mode == 'Single Cluster':
                                yaxis_title=" Power [Wh/h]", xaxis_title="hour [h]")
             st.plotly_chart(plot)
 
+        key = 211
         if st.sidebar.checkbox("Microgrid optimization",False,key=key):
             row100_1, row100_2 = st.columns((1, 1))
             microgrid['Load unsupplied [%]'] = 100 - microgrid['Energy Produced [MWh]'] / \
