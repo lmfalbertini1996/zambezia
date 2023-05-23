@@ -803,7 +803,7 @@ elif which_mode == 'Single Cluster':
             % (info_gdf['type'].values[0],
                round(load_profiles.loc[file_gdf.loc[select,'cluster_ID'], :].sum()/1000,2),
                round(loads.loc[file_gdf.loc[select,'cluster_ID'],:].values[0]/1000,2),
-               electrification.loc[electrification['cluster_ID']==2,'Electrification'].values[0])
+               electrification.loc[electrification['cluster_ID']==info_gdf['cluster_ID'].values[0],'Electrification'].values[0])
     create_directories_only_if_not_exist(dashboarding_path, False)
 
 
@@ -1598,7 +1598,7 @@ elif which_mode == 'Single Cluster':
                  'Investment Cost [kEUR]', 'Replace Cost [kEUR]', 'Energy Produced [MWh]', 'Load unsupplied [%]',
                  'CO2 [kg]']]
             key = key
-            if select in microgrid.index:
+            if select_clus_ID in microgrid.index:
                 microgrid = pd.DataFrame(microgrid.loc[file_gdf.loc[select,'cluster_ID'], :])
                 off_grid_solution=True
             else:
