@@ -117,7 +117,7 @@ file_gdf = file_gdf.sort_values('Community')
 
 ##############################################################################
 
-which_modes = ['Entire Area', 'Single Cluster', 'Compare Clusters']
+which_modes = ['Entire Area', 'Single Cluster']
 which_mode = st.sidebar.selectbox('Select the Mode', which_modes, index=0)
 
 
@@ -678,8 +678,8 @@ elif which_mode == 'Single Cluster':
     # Side bar for selecting the community to be investigated
     select_clus_ID = st.sidebar.selectbox('Select the Community',file_gdf.cluster_ID, index=0)
     select =  int(file_gdf.index[file_gdf['cluster_ID']==select_clus_ID].values[0])
-    gisele = st.sidebar.selectbox('GISEle',['Yes','No'], index=1)
-    
+    #gisele = st.sidebar.selectbox('GISEle',['Yes','No'], index=1)
+    gisele='No'
     select_id = list(file_gdf.index).index(select)
 
        

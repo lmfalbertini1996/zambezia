@@ -582,7 +582,6 @@ elif which_mode == 'Single Cluster':
     # Side bar for selecting the community to be investigated
     select_name = st.sidebar.selectbox('Select the Community',file_gdf.Comunidade, index=0)
     select = int(file_gdf.index[file_gdf['Comunidade']==select_name].values[0])
-    select
     #gisele = st.sidebar.selectbox('GISEle',['Yes','No'], index=1)
 
 
@@ -700,6 +699,8 @@ elif which_mode == 'Single Cluster':
                 % (b[b[old_ID] > 0].index[0],
                    round(int(info_gdf.night_lights.values), 2),
                    round(int(info_gdf.lights_build.values), 2))
+        load_profiles = pd.read_csv(os.path.join(run_directory, 'Output', 'Surveys','energy_households.csv'), index_col=0)
+        power = pd.read_csv(os.path.join(run_directory, 'Output', 'Surveys','energy_households.csv'), index_col=0)
         "# Survey outcome"
 
         'Moving on to the survey performed, we surveyed a total of %s people. In terms of income, we found an average of \
@@ -708,14 +709,16 @@ elif which_mode == 'Single Cluster':
         for lack of electrification, we found that %s identificated territorial limitations, %s think that political issues are hindering \
         the development of infrastructure, %s blame their economic situation and only %s think that the reason is lack of interest from public bodies. \
         In terms of main source of income we have: %s Agriculture, %s Fishing, %s Teaching, %s Carpenetery, %s Market and %s are other activities.\
-        Finally, based on the analysis performed for the village, we estimated %s Wh of electric needs and a peak load of %s. For more information,\
+        Finally, based on the analysis performed for the village, we estimated %s kWh of electric needs and a peak load of %s kW. For more information,\
         check the load profiles.' \
             % (survey_gdf['Total_survey'].values[0], survey_gdf['Average_Income'].values[0],survey_gdf['Max_Income'].values[0],survey_gdf['Min_Income'].values[0],
                round(survey_gdf['Ele_access'].values[0],4)*100, round(survey_gdf['National Grid'].values[0]/survey_gdf['Total_survey'].values[0],2),
                round(survey_gdf['Solar Home Sytem'].values[0]/survey_gdf['Total_survey'].values[0],2),int(survey_gdf['Territorial_lim'].values[0]),
                int(survey_gdf['Political_issues'].values[0]),int(survey_gdf['Money'].values[0]),int(survey_gdf['Desinterest'].values[0]),
                int(survey_gdf['Agriculture'].values[0]),int(survey_gdf['Fishing'].values[0]),int(survey_gdf['Teaching'].values[0]),int(survey_gdf['Carpentery'].values[0]),
-               int(survey_gdf['Market'].values[0]), int(survey_gdf['Other_activities'].values[0]),1231,1413)
+               int(survey_gdf['Market'].values[0]), int(survey_gdf['Other_activities'].values[0]),
+               round(load_profiles.loc[select_name,:].sum()/1000,2),
+               round(load_profiles.loc[select_name].values[0]/1000,2))
     create_directories_only_if_not_exist(dashboarding_path, False)
 
 
