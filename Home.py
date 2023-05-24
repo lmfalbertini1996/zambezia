@@ -152,7 +152,7 @@ st.write("""
         ## Contact us
 Darlain Edeme: darlain.edeme@polimi.it;
 
-Aleksandar Dimovsky: aleksandar.dimovsky@polimi.it;
+Aleksandar Dimovski: aleksandar.dimovsky@polimi.it;
 
 Lorenzo Maria Filippo Albertini: lorenzomaria.albertini@polimi.it;
 

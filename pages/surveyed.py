@@ -352,8 +352,11 @@ if which_mode == 'Entire Area':
             style_low = {'fillColor': 'orange', 'color': 'black'}
             style_med = {'fillColor': 'red', 'color': 'black'}
             style_high = {'fillColor': 'black', 'color': 'black'}
-
-            feature_group_1 = folium.FeatureGroup(name='All surveyed communities', show=True)
+            if color_communities=='Type' or color_communities=='Energy requirement per capita':
+                bool = False
+            else:
+                bool = True
+            feature_group_1 = folium.FeatureGroup(name='All surveyed communities', show=bool)
             folium.GeoJson(file_gdf.to_json(), name='All surveyed communities',
                            style_function=lambda x: style3).add_to(feature_group_1)
             if color_communities=='Type':

@@ -136,14 +136,14 @@ if which_mode == 'Entire Area':
         with row1_1:
             key = 2
             comparison_dimensionq_scatter_x = st.selectbox('Select the parameter on the x-axis:', file_gdf.select_dtypes(include=numerics).columns, key=key,
-                                                                   index = 35)
+                                                                   index = 19)
             key = 3
             comparison_dimensionq_scatter_y = st.selectbox('Select the parameter on the y-axis', file_gdf.select_dtypes(include=numerics).columns, key=key,
-                                                                   index = 9)
+                                                                   index = 13)
             
             key = 4
             comparison_color = st.selectbox('Select the parameter on which to color', file_gdf.columns, key=key,
-                                                                   index = 24)
+                                                                   index = 35)
             
             plot = px.scatter(data_frame=file_gdf, x=comparison_dimensionq_scatter_x, y=comparison_dimensionq_scatter_y, color=comparison_color,
                                 hover_name='Community') #color_continuous_scale='reds'
@@ -379,7 +379,7 @@ if which_mode == 'Entire Area':
                     fields_line = ['Power [kW]','Length','Cost']
                 if electric_lines.crs != 'epsg:4326':
                     electric_lines = electric_lines.to_crs(4326)
-                feature_group_lines = folium.FeatureGroup(name='Electric lines', show=True)
+                feature_group_lines = folium.FeatureGroup(name='Electric lines', show=False)
                 folium.GeoJson(electric_lines.to_json(), name='lines', style_function=lambda x: style2).add_to(
                     feature_group_lines)
                 feature_group_lines.add_to(m)
@@ -392,7 +392,7 @@ if which_mode == 'Entire Area':
                 communities.geometry=communities.geometry.buffer(20)
                 if communities.crs != 'epsg:4326':
                     communities = communities.to_crs(4326)
-                feature_group_communities = folium.FeatureGroup(name='Off_grid', show=True)
+                feature_group_communities = folium.FeatureGroup(name='Off_grid', show=False)
 
                 folium.GeoJson(communities[communities['PS']=='None(too far)'].to_json(), name='Off_grid',
                         style_function=lambda x: {'color': 'black'}).add_to(feature_group_communities)
@@ -408,9 +408,12 @@ if which_mode == 'Entire Area':
                     popup = folium.Popup(iframe, max_width=500)
 
                     return popup
-
+                if coloring == 'OFF':
+                    bool = True
+                else:
+                    bool = False
                 i=0
-                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=True)
+                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=bool)
                 folium.GeoJson(communities[communities['PS'] == unique_substations[i]].to_json(), name=unique_substations[i],
                                style_function=lambda x: {'color': 'red'}).add_to(feature_group_communities)
                 line = folium.GeoJson(electric_lines[electric_lines['Sub_name'] == unique_substations[i]].to_json(),
@@ -428,7 +431,7 @@ if which_mode == 'Entire Area':
                 feature_group_communities.add_to(m)
 
                 i = 1
-                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=True)
+                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=bool)
                 folium.GeoJson(communities[communities['PS'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'cyan'}).add_to(feature_group_communities)
@@ -445,7 +448,7 @@ if which_mode == 'Entire Area':
                 feature_group_communities.add_to(m)
 
                 i = 2
-                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=True)
+                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=bool)
                 folium.GeoJson(communities[communities['PS'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'darkblue'}).add_to(feature_group_communities)
@@ -464,7 +467,7 @@ if which_mode == 'Entire Area':
 
 
                 i = 3
-                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=True)
+                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=bool)
                 folium.GeoJson(communities[communities['PS'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'purple'}).add_to(feature_group_communities)
@@ -481,7 +484,7 @@ if which_mode == 'Entire Area':
                 feature_group_communities.add_to(m)
 
                 i = 4
-                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=True)
+                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=bool)
                 folium.GeoJson(communities[communities['PS'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'yellow'}).add_to(feature_group_communities)
@@ -498,7 +501,7 @@ if which_mode == 'Entire Area':
                 feature_group_communities.add_to(m)
 
                 i = 5
-                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=True)
+                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=bool)
                 folium.GeoJson(communities[communities['PS'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'lime'}).add_to(feature_group_communities)
@@ -515,7 +518,7 @@ if which_mode == 'Entire Area':
                 feature_group_communities.add_to(m)
 
                 i = 6
-                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=True)
+                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=bool)
                 folium.GeoJson(communities[communities['PS'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'magenta'}).add_to(feature_group_communities)
@@ -532,7 +535,7 @@ if which_mode == 'Entire Area':
                 feature_group_communities.add_to(m)
 
                 i = 7
-                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=True)
+                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=bool)
                 folium.GeoJson(communities[communities['PS'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'olive'}).add_to(feature_group_communities)
@@ -550,7 +553,7 @@ if which_mode == 'Entire Area':
 
 
                 i = 8
-                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=True)
+                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=bool)
                 folium.GeoJson(communities[communities['PS'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'green'}).add_to(feature_group_communities)
@@ -567,7 +570,7 @@ if which_mode == 'Entire Area':
                 feature_group_communities.add_to(m)
 
                 i = 9
-                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=True)
+                feature_group_communities = folium.FeatureGroup(name=unique_substations[i], show=bool)
                 folium.GeoJson(communities[communities['PS'] == unique_substations[i]].to_json(),
                                name=unique_substations[i],
                                style_function=lambda x: {'color': 'orange'}).add_to(feature_group_communities)
@@ -662,14 +665,14 @@ if which_mode == 'Entire Area':
         with row2_1:
             key = 201
             comparison_dimensions_hist1 = st.selectbox("Select a parameter to visualize:",
-                                                      options=file_gdf.select_dtypes(include=numerics).columns, index=7,
+                                                      options=file_gdf.select_dtypes(include=numerics).columns, index=14,
                                                       key=key)
 
             plot_hist(comparison_dimensions_hist1,key=200)
         with row2_2:
             key = 301
             comparison_dimensions_hist2 = st.selectbox("Select a second parameter to visualize:",options=file_gdf.select_dtypes(include=numerics).columns,
-                                                       index=15,key=key)
+                                                       index=2,key=key)
             plot_hist(comparison_dimensions_hist2,key=300)
 
                 
