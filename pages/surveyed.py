@@ -276,7 +276,7 @@ if all_clusters_gdf.crs != 'epsg:4326':
 
 #THIS IS DATA FROM THE SURVEYS
 file_gdf = gpd.read_file(os.path.join(run_directory,'Output','Surveys','Final_surveyed.geojson'))
-
+file_gdf['Name'] = file_gdf['index']
 file_gdf = file_gdf.reset_index()
 file_gdf = file_gdf.set_crs(crs)
 
@@ -555,14 +555,14 @@ if which_mode == 'Entire Area':
     if detailed_table_survey == "ON":
         "# Survey outcome"
 
-        survey_outcomes = ['Total_survey',
+        survey_outcomes = ['Name','Total_survey',
        'Average_Income', 'Average_Expenditure','Max_Income', 'Min_Income','Average Willingness to pay' ,
        'Ele_access', 'Territorial_lim', 'Political_issues', 'Money',
        'Desinterest', 'Other', 'Agriculture', 'Fishing', 'Teaching',
        'Carpentery', 'Other_activities', 'Market', 'el_work_yes',
        'National Grid', 'Solar Home Sytem', 'Exp ele']
         file_gdf_for_table = file_gdf[survey_outcomes]
-        st.dataframe(file_gdf_for_table)
+        st.dataframe(file_gdf_for_table.set_index('Name'))
 
     key = 16
     detailed_table_vania = st.sidebar.selectbox('------ Detailed Table Vania------', ['ON', 'OFF'], key=key, index=1)
@@ -570,11 +570,11 @@ if which_mode == 'Entire Area':
     if detailed_table_vania == "ON":
         "# VANIA outcome"
 
-        vania_outcomes = ['type','area','population','Population_2','building_d','Distance from road','road_densi',
+        vania_outcomes = ['Name','type','area','population','Population_2','building_d','Distance from road','road_densi',
        'Distance from grid', 'Distance from city', 'HDI','Average Wealth Index'
        ]
         file_gdf_for_table = file_gdf[vania_outcomes]
-        st.dataframe(file_gdf_for_table)
+        st.dataframe(file_gdf_for_table.set_index('Name'))
 
 
 # #################################################################################################
@@ -700,7 +700,7 @@ elif which_mode == 'Single Cluster':
                    round(int(info_gdf.night_lights.values), 2),
                    round(int(info_gdf.lights_build.values), 2))
         load_profiles = pd.read_csv(os.path.join(run_directory, 'Output', 'Surveys','energy_households.csv'), index_col=0)
-        power = pd.read_csv(os.path.join(run_directory, 'Output', 'Surveys','energy_households.csv'), index_col=0)
+        power = pd.read_csv(os.path.join(run_directory, 'Output', 'Surveys','power_households.csv'), index_col=0)
         "# Survey outcome"
 
         'Moving on to the survey performed, we surveyed a total of %s people. In terms of income, we found an average of \
@@ -718,7 +718,7 @@ elif which_mode == 'Single Cluster':
                int(survey_gdf['Agriculture'].values[0]),int(survey_gdf['Fishing'].values[0]),int(survey_gdf['Teaching'].values[0]),int(survey_gdf['Carpentery'].values[0]),
                int(survey_gdf['Market'].values[0]), int(survey_gdf['Other_activities'].values[0]),
                round(load_profiles.loc[select_name,:].sum()/1000,2),
-               round(load_profiles.loc[select_name].values[0]/1000,2))
+               round(power.loc[select_name].values[0]/1000,2))
     create_directories_only_if_not_exist(dashboarding_path, False)
 
 
