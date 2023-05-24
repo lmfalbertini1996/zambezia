@@ -318,7 +318,7 @@ if which_mode == 'Entire Area':
                 else:
                     status_col_name = 'no_status_column'
 
-                voltage_col_name = [x for x in grid_gdf.columns if any(ext in x for ext in ['volt', 'Volt', 'VOLT'])]
+                voltage_col_name = [x for x in grid_gdf.columns if any(ext in x for ext in ['volt', 'Volt', 'VOLT', 'U_kV1_1'])]
 
                 if len(voltage_col_name) > 0:
                     voltage_col_name = voltage_col_name[0]
